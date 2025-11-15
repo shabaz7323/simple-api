@@ -1,0 +1,48 @@
+name: CI Pipeline - Build, Test, Docker
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Set up Node 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Start server in background
+        # Run server in background so test.js can hit it
+        run: |
+          nohup npm start > server.log 2>&1 &
+          # wait for server to be up (simple)
+          for i in {1..10}; do
+            if curl -sSf http://localhost:3000/health >/dev/null; then
+              echo "Server is up"
+              break
+            fi
+            echo "Waiting for server..."
+            sleep 1
+          done
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build Docker image (local)
+        run: docker build -t simple-api:ci-${{ github.sha }} .
+
+      - name: List Docker images
+        run: docker images
