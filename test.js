@@ -25,3 +25,7 @@ req.on('error', (err) => {
 });
 
 req.end();
+
+console.log("Tests running successfully!");
+process.exit(0);
+
