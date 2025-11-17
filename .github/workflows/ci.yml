@@ -43,5 +43,5 @@ jobs:
         run: |
           aws ecs update-service \
             --cluster simple-api-cluster \
-            --service simple-api-service \
+            --service simple-api-task-service-lvf5z3eh \
             --force-new-deployment

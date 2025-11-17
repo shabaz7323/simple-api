@@ -37,6 +37,6 @@ jobs:
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
       with:
         task-definition: ecs-task.json
-        service: simple-api-service
+        service: simple-api-task-service-lvf5z3eh
         cluster: simple-api-cluster
         wait-for-service-stability: true
