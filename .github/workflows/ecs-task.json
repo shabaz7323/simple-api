@@ -1,0 +1,40 @@
+{
+  "family": "simple-api-task",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "cpu": "256",
+  "memory": "512",
+  "executionRoleArn": "arn:aws:iam::767691736567:role/ecsTaskExecutionRole",
+"taskRoleArn": "arn:aws:iam::767691736567:role/ecsTaskExecutionRole",
+
+  "containerDefinitions": [
+    {
+      "name": "simple-api",
+      "image": "767691736567.dkr.ecr.eu-north-1.amazonaws.com/simple_api:latest",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 3000,
+          "hostPort": 3000,
+          "protocol": "tcp"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/simple-api",
+          "awslogs-region": "eu-north-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "environment": [
+        {
+          "name": "NODE_ENV",
+          "value": "production"
+        }
+      ]
+    }
+  ]
+}
