@@ -20,7 +20,6 @@ jobs:
           aws-region: eu-north-1
 
       - name: Login to Amazon ECR
-        id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build, Tag, and Push Docker Image
@@ -36,12 +35,15 @@ jobs:
           ECR_IMAGE: 767691736567.dkr.ecr.eu-north-1.amazonaws.com/simple_api:latest
         run: |
           sed -i "s|YOUR_ECR_IMAGE_URI|$ECR_IMAGE|g" ecs-task.json
-          aws ecs register-task-definition \
-            --cli-input-json file://ecs-task.json
+          aws ecs register-task-definition --cli-input-json file://ecs-task.json
+
+      - name: Debug ECS Services
+        run: |
+          aws ecs list-services --cluster simple-api-cluster
 
       - name: Deploy to ECS Service
         run: |
           aws ecs update-service \
             --cluster simple-api-cluster \
-            --service simple-api-task-service-lvf5z3eh \
+            --service simple-api-service \
             --force-new-deployment
